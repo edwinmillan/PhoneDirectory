@@ -30,14 +30,19 @@ class Pdf
     Prawn::Document.generate(filename, page_size: "LEGAL", page_layout: :portrait) do |pdf|
       pdf.font_size 24
       pdf.draw_text title, at: [175,890]
-      pdf.font_size 9
+      pdf.font_size 7.5
       logo_url = logo
+      widthoptions = {
+        1 => 50,
+        3 => 50,
+        5 => 50
+      }
       pdf.image open(logo_url), width: 122, height: 56, at: [50,926]
 
       pdf.bounding_box([50,880],width: 450, height: 900) do
         header = [["Name","Extension"] * max_columns]
         pdf.text "Revision #{Time.now.strftime "%-m.%d.%Y"}", align: :right
-        pdf.table(header + formatted_data, width: 450, position: :center, cell_style: {padding: 2}, row_colors: ["EBF0DE","FFFFFF"], header: true) do
+        pdf.table(header + formatted_data, width: 450, position: :center, cell_style: {padding: 2}, row_colors: ["EBF0DE","FFFFFF"], header: true, column_widths: widthoptions) do
           row(0).font_style = :bold
           row(0).text_color = "FFFFFF"
           row(0).background_color = "9BBA58"
