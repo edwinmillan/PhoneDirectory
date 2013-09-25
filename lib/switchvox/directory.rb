@@ -20,11 +20,12 @@ class Directory
     return response = HTTParty.post(@url, options)
   end
 
-  def export_extensions
+  def export_extensions(*blacklist)
     exts = []
     extensions(response).map! do |raw_ext|
+
       extension = Extension.new(raw_ext)
-      exts << extension.to_a
+      exts << extension.to_a unless blacklist.include?(extension.ext)
     end
     return exts
   end
