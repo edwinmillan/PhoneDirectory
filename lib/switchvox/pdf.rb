@@ -4,7 +4,6 @@ require "open-uri"
 class Pdf
   attr_accessor :max_columns, :max_rows, :raw_data, :formatted_data, :filename, :logo, :title, :count
   def initialize(options = {})
-    @max_columns = options[:max_columns] || 3
     @raw_data = options[:raw_data] || raise_argument_error(:raw_data)
     @filename = options[:filename] || raise_argument_error(:filename)
     @logo = options[:logo] || 'logo.png'
@@ -16,11 +15,22 @@ class Pdf
     return prawn_pdf_generation
   end
 
+  def max_columns
+    col_capacity = max_rows
+    col_count = 1
+    while raw_data.count > col_capacity
+      col_capacity += max_rows
+      col_count += 1
+    end
+
+    return col_count
+  end
+
   def formatted_data
     columns = raw_data.each_slice(max_rows).inject([]) { |cols,col| cols << col }
     columns.fill([], columns.length...max_columns)
     columns.each { |column| column.fill([" "," "], column.length...max_rows) }
-    data = columns.transpose.flatten!.each_slice(6).to_a
+    data = columns.transpose.flatten!.each_slice(max_columns*2).to_a
     return data
   end
 
