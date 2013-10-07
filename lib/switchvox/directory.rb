@@ -27,7 +27,7 @@ class Directory
       extension = Extension.new(raw_ext)
       exts << extension.to_a unless blacklist.include?(extension.ext)
     end
-    return exts
+    return exts.sort!
   end
 
   private
